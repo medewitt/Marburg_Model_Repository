@@ -1,1 +1,1 @@
-# Marburg_Model_Repository
+# Marburg Model Repository
