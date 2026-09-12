@@ -12,13 +12,11 @@
 #      Report r with a large-sample (Wald) 95% CI and doubling time ln(2)/r.
 #   4. Outbreaks with peak daily incidence <= 1 or a growth phase < 3 days
 #      are point-source / too small to identify r and are reported as NA.
-#   5. Add a pseudo basic reproduction number R0 = exp(r * SI), treating the
-#      serial interval SI as a fixed generation interval. Pre-2014 Marburg
-#      serial-interval estimates of 9.3 and 11.2 days are used; the 95% CI is
-#      propagated from the growth-rate Wald CI. This exp(r * SI) mapping
-#      overestimates R0 when the doubling time is shorter than SI (flagged in
-#      the note column); the linear approximation 1 + r * SI is more
-#      conservative there.
+#   5. Add a pseudo basic reproduction number R0 = 1 + r * SI, the
+#      Wallinga & Lipsitch (2007) result for an exponentially distributed
+#      generation interval, using the serial interval SI as a proxy. Pre-2014
+#      Marburg serial-interval estimates of 9.3 and 11.2 days are used; the
+#      95% CI is propagated from the growth-rate Wald CI.
 #
 # Data formats: Angola 2005 is aggregate surveillance (new cases per reported
 # date); all other files are line lists keyed on symptom-onset date
@@ -118,16 +116,11 @@ for (ob in outbreaks) {
   row$doubling_time_days <- if (r > 0) round(dt, 1) else NA_real_
   for (k in names(SI)) {
     si <- SI[[k]]
-    row[[paste0("pseudoR0_SI", k)]]      <- round(exp(r  * si), 2)
-    row[[paste0("pseudoR0_SI", k, "_low")]]  <- round(exp((r - z * se) * si), 2)
-    row[[paste0("pseudoR0_SI", k, "_high")]] <- round(exp((r + z * se) * si), 2)
+    row[[paste0("pseudoR0_SI", k)]]      <- round(1 + r * si, 2)
+    row[[paste0("pseudoR0_SI", k, "_low")]]  <- round(1 + (r - z * se) * si, 2)
+    row[[paste0("pseudoR0_SI", k, "_high")]] <- round(1 + (r + z * se) * si, 2)
   }
-  note_fit <- note_kind
-  if (r > 0 && dt < min(SI)) {
-    msg <- "doubling time < serial interval: exp(r*SI) pseudo R0 likely overestimated"
-    note_fit <- paste(c(note_kind, msg)[nzchar(c(note_kind, msg))], collapse = "; ")
-  }
-  row$note <- note_fit
+  row$note <- note_kind
   res <- rbind(res, row)
 }
 

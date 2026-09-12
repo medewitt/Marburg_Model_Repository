@@ -14,14 +14,14 @@ Random.seed!(1834)
 const Z = quantile(Normal(), 0.975)
 const SI = ("9.3" => 9.3, "11.2" => 11.2)  # pre-2014 mean serial intervals (days)
 
-# pseudo R0 = exp(r * SI), fixed-generation-interval approximation. Returns a
-# NamedTuple of the six R0 columns (point + Wald CI for each serial interval).
+# pseudo R0 = 1 + r * SI (Wallinga & Lipsitch 2007, exponential generation
+# interval). Returns a NamedTuple of the six R0 columns (point + Wald CI per SI).
 function pseudo_r0(r, lo, hi)
     pairs = Pair{Symbol,Any}[]
     for (k, si) in SI
-        push!(pairs, Symbol("pseudoR0_SI$k")      => (ismissing(r)  ? missing : round(exp(r  * si), digits = 2)))
-        push!(pairs, Symbol("pseudoR0_SI$(k)_low") => (ismissing(lo) ? missing : round(exp(lo * si), digits = 2)))
-        push!(pairs, Symbol("pseudoR0_SI$(k)_high")=> (ismissing(hi) ? missing : round(exp(hi * si), digits = 2)))
+        push!(pairs, Symbol("pseudoR0_SI$k")      => (ismissing(r)  ? missing : round(1 + r  * si, digits = 2)))
+        push!(pairs, Symbol("pseudoR0_SI$(k)_low") => (ismissing(lo) ? missing : round(1 + lo * si, digits = 2)))
+        push!(pairs, Symbol("pseudoR0_SI$(k)_high")=> (ismissing(hi) ? missing : round(1 + hi * si, digits = 2)))
     end
     return (; pairs...)
 end
@@ -108,17 +108,12 @@ for (label, file, kind) in outbreaks
     se = stderror(m)[2]
     lo, hi = r - Z * se, r + Z * se
     dt = r > 0 ? log(2) / r : missing
-    note_fit = note_kind
-    if r > 0 && dt < minimum(last.(SI))
-        msg = "doubling time < serial interval: exp(r*SI) pseudo R0 likely overestimated"
-        note_fit = join(filter(!isempty, [note_kind, msg]), "; ")
-    end
     push!(rows, (; outbreak = label, total_cases = total, n_days_full = length(cases),
         n_days_growth_phase = ndays, cases_growth_phase = cwin,
         growth_rate_per_day = round(r, digits = 4), std_error = round(se, digits = 4),
         ci_low = round(lo, digits = 4), ci_high = round(hi, digits = 4),
         doubling_time_days = r > 0 ? round(dt, digits = 1) : missing,
-        pseudo_r0(r, lo, hi)..., note = note_fit))
+        pseudo_r0(r, lo, hi)..., note = note_kind))
 end
 
 res = DataFrame(rows)
