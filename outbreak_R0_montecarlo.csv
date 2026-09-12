@@ -1,7 +1,7 @@
-outbreak,era,r_per_day,se_r,r_lo,r_hi,tg_mean_days,sd_tg_mean,tg_lo,tg_hi,cv_prior,R0_gamma_median,R0_gamma_lo,R0_gamma_hi,pct_undefined,note
-DRC 1999,pre2014,0.0064,0.0025,0.0015,0.0113,9.3,1.0,7.34,11.26,"N(0.6,0.1) trunc[0.3,1.0]",1.06,1.01,1.11,0.0,
-Marburg 1967,pre2014,0.0886,0.047,-0.0035,0.1807,9.3,1.0,7.34,11.26,"N(0.6,0.1) trunc[0.3,1.0]",2.04,0.96,3.9,0.0,
-Uganda 2012,pre2014,0.0163,0.0085,-0.0004,0.033,9.3,1.0,7.34,11.26,"N(0.6,0.1) trunc[0.3,1.0]",1.16,1.0,1.35,0.0,
-Tanzania 2023,2020s,0.2795,0.1509,-0.0163,0.5753,11.0,1.0,9.04,12.96,"N(0.6,0.1) trunc[0.3,1.0]",7.62,0.84,36.11,0.1,r inflated by index-case gap; gamma R0 unreliable
-Tanzania 2023 (excl. index),2020s,0.0,0.5477,-1.0735,1.0735,11.0,1.0,9.04,12.96,"N(0.6,0.1) trunc[0.3,1.0]",5.48,0.0,179.42,31.0,"degenerate (r~0, 3-day window); R0 not meaningful"
-Rwanda 2024,2020s,0.1201,0.0234,0.0742,0.166,11.0,1.0,9.04,12.96,"N(0.6,0.1) trunc[0.3,1.0]",2.91,1.99,4.43,0.0,
+outbreak,gi_source,gi_mean_days,gi_cv_pooled,r_per_day,r_lo,r_hi,R0_gamma_median,R0_gamma_lo,R0_gamma_hi
+DRC 1999,Qian pooled mean,9.2,0.478,0.0064,0.0015,0.0113,1.06,1.01,1.11
+Marburg 1967,Qian pooled mean,9.2,0.478,0.0886,-0.0036,0.1808,2.1,0.97,4.16
+Uganda 2012,Qian pooled mean,9.2,0.478,0.0163,-0.0003,0.0329,1.16,1.0,1.35
+Tanzania 2023,outbreak-pair mean (n=7),10.0,0.478,0.2795,-0.0164,0.5753,8.59,0.85,40.74
+Tanzania 2023 (excl. index),outbreak-pair mean (n=7),10.0,0.478,0.0,-1.0735,1.0735,3.55,0.0,265.95
+Rwanda 2024,Qian pooled mean,9.2,0.478,0.1201,0.0743,0.1658,2.66,1.86,3.84

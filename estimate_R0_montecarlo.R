@@ -1,43 +1,41 @@
-# Monte Carlo pseudo R0 with uncertainty in the generation interval.
+# Monte Carlo pseudo R0 with an outbreak-informed generation interval.
 #
-# For each outbreak with an estimable growth rate (from outbreak_growth_rates.csv)
-# we propagate three sources of uncertainty to R0:
-#   1. growth rate      r  ~ Normal(r_hat, se_r)                (GLM Wald)
-#   2. mean gen. interval T_g ~ Normal(mu_era, sd_tg_mean), truncated > 0,
-#      with era-specific means: pre-2014 outbreaks 9.3 d, 2020s outbreaks 11 d
-#      (the reported shift in the serial-interval estimate);
-#   3. GI dispersion via the coefficient of variation
-#      CV ~ Normal(0.6, 0.1) truncated to [0.3, 1.0].
+# For each outbreak with an estimable growth rate we propagate:
+#   1. growth rate   r  ~ Normal(r_hat, se_r)  (GLM Wald);
+#   2. mean generation interval T_g ~ Normal(mu, se_mu), truncated > 0, where
+#      mu is the mean serial interval of that outbreak's reconstructed
+#      transmission pairs when it has >= 3 (se_mu = pair SD / sqrt(n)),
+#      otherwise the pooled Marburg estimate mu = 9.2 d (Qian et al. 2023,
+#      medRxiv 10.1101/2022.06.17.22276538; se ~ 0.7).
+#   3. GI dispersion: the coefficient of variation is fixed at the pooled
+#      literature value CV = 4.4/9.2 = 0.478 for ALL outbreaks. Per-outbreak
+#      pair samples are star-shaped (most share one infector) so their SD is
+#      not a reliable dispersion; only the mean is taken from the pairs.
 #
-# R0 uses the gamma generation-interval form (Wallinga & Lipsitch 2007):
-#   R0 = (1 + r * T_g / kappa)^kappa,  kappa = 1/CV^2 = (T_g / SD_GI)^2.
-# CV = 1 recovers the exponential-GI result 1 + r*T_g; CV -> 0 recovers
-# exp(r*T_g). R0 is undefined when the base is <= 0 (strong decline); such
-# draws are dropped and their fraction reported as pct_undefined.
-#
-# All assumptions are the editable constants below. Seed 1834 for reproducibility.
+# R0 = (1 + r*T_g/kappa)^kappa, kappa = 1/CV^2 (gamma generation interval).
+# Undefined when the base <= 0 (strong decline); such draws are dropped.
+# Seed 1834; N = 2e5.
 
 set.seed(1834)
 N <- 200000L
-SD_TG_MEAN <- 1.0                 # uncertainty in the era mean generation interval (days)
-TG_MEAN <- c(pre2014 = 9.3, "2020s" = 11.0)
-CV_MEAN <- 0.6; CV_SD <- 0.1; CV_LO <- 0.3; CV_HI <- 1.0
+POOL_MEAN <- 9.2; POOL_SE <- 0.7; POOL_CV <- round(4.4 / 9.2, 3)  # 0.478
+MIN_PAIRS <- 3L
 Z <- qnorm(0.975)
+KAPPA <- 1 / POOL_CV^2
 
 rtnorm <- function(n, mean, sd, lo = -Inf, hi = Inf) {
   x <- rnorm(n, mean, sd)
-  repeat {
-    bad <- x < lo | x > hi
-    if (!any(bad)) break
-    x[bad] <- rnorm(sum(bad), mean, sd)
-  }
+  repeat { bad <- x < lo | x > hi; if (!any(bad)) break; x[bad] <- rnorm(sum(bad), mean, sd) }
   x
 }
 
-era_of <- function(label) {
-  yr <- as.integer(sub(".*?([0-9]{4}).*", "\\1", label))
-  if (is.na(yr)) NA_character_ else if (yr < 2014) "pre2014" else "2020s"
-}
+pairs <- read.csv("marburg_transmission_pairs.csv", stringsAsFactors = FALSE)
+pairs <- pairs[pairs$confidence %in% c("high", "medium"), ]
+pstat <- aggregate(serial_interval_days ~ outbreak, pairs,
+                   function(v) c(mean = mean(v), sd = sd(v), n = length(v)))
+pstat <- do.call(rbind, lapply(seq_len(nrow(pstat)), function(i)
+  data.frame(outbreak = pstat$outbreak[i], mean = pstat$serial_interval_days[i, "mean"],
+             sd = pstat$serial_interval_days[i, "sd"], n = pstat$serial_interval_days[i, "n"])))
 
 gr <- read.csv("outbreak_growth_rates.csv", check.names = FALSE, stringsAsFactors = FALSE)
 gr <- gr[!is.na(gr$growth_rate_per_day), ]
@@ -45,24 +43,21 @@ gr <- gr[!is.na(gr$growth_rate_per_day), ]
 out <- data.frame()
 for (i in seq_len(nrow(gr))) {
   label <- gr$outbreak[i]; rh <- gr$growth_rate_per_day[i]; se <- gr$std_error[i]
-  era <- era_of(label); mu <- TG_MEAN[[era]]
+  key <- sub(" \\(excl. index\\)$", "", label)
+  ps <- pstat[pstat$outbreak == key, ]
+  if (nrow(ps) == 1 && ps$n >= MIN_PAIRS) {
+    mu <- ps$mean; mse <- ps$sd / sqrt(ps$n); src <- sprintf("outbreak-pair mean (n=%d)", ps$n)
+  } else { mu <- POOL_MEAN; mse <- POOL_SE; src <- "Qian pooled mean" }
   r  <- rnorm(N, rh, se)
-  tg <- rtnorm(N, mu, SD_TG_MEAN, lo = 0.1, hi = 50)
-  cv <- rtnorm(N, CV_MEAN, CV_SD, lo = CV_LO, hi = CV_HI)
-  kappa <- 1 / cv^2
-  base <- 1 + r * tg / kappa
-  R0 <- ifelse(base > 0, base^kappa, NA_real_)
+  tg <- rtnorm(N, mu, mse, lo = 0.1, hi = 60)
+  base <- 1 + r * tg / KAPPA
+  R0 <- ifelse(base > 0, base^KAPPA, NA_real_)
   q <- quantile(R0, c(0.025, 0.5, 0.975), na.rm = TRUE)
-  out <- rbind(out, data.frame(
-    outbreak = label, era = era, r_per_day = rh, se_r = se,
-    r_lo = round(rh - Z * se, 4), r_hi = round(rh + Z * se, 4),
-    tg_mean_days = mu, sd_tg_mean = SD_TG_MEAN,
-    tg_lo = round(mu - Z * SD_TG_MEAN, 2), tg_hi = round(mu + Z * SD_TG_MEAN, 2),
-    cv_prior = sprintf("N(%.1f,%.1f) trunc[%.1f,%.1f]", CV_MEAN, CV_SD, CV_LO, CV_HI),
+  out <- rbind(out, data.frame(outbreak = label, gi_source = src,
+    gi_mean_days = round(mu, 2), gi_cv_pooled = POOL_CV,
+    r_per_day = rh, r_lo = round(rh - Z * se, 4), r_hi = round(rh + Z * se, 4),
     R0_gamma_median = round(q[[2]], 2), R0_gamma_lo = round(q[[1]], 2),
-    R0_gamma_hi = round(q[[3]], 2),
-    pct_undefined = round(mean(is.na(R0)) * 100, 1),
-    stringsAsFactors = FALSE))
+    R0_gamma_hi = round(q[[3]], 2), stringsAsFactors = FALSE))
 }
 write.csv(out, "outbreak_R0_montecarlo.csv", row.names = FALSE)
-print(out[, c("outbreak","era","tg_mean_days","R0_gamma_median","R0_gamma_lo","R0_gamma_hi","pct_undefined")])
+print(out)
