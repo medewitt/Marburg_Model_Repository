@@ -43,13 +43,20 @@ outbreaks = [
     ("Uganda 2014",       "MarburgUganda2014Line.csv",   :line),
     ("Uganda 2017",       "MarburgUganda2017Line.csv",   :line),
     ("Tanzania 2023",     "MarburgTanzania2023Line.csv", :line),
+    ("Tanzania 2023 (excl. index)", "MarburgTanzania2023Line.csv", :line),
 ]
+
+const DROP_INDEX = Set(["Tanzania 2023 (excl. index)"])  # drop index case (earliest onset)
+const NOTES = Dict(
+    "Tanzania 2023" => "all cases; r inflated by 9-day gap between index case (onset 27 Feb) and cluster",
+    "Tanzania 2023 (excl. index)" => "index case (onset 27 Feb) dropped; post-introduction human-to-human phase",
+)
 
 parse_dmy(x)  = tryparse(Date, strip(String(x)), dateformat"d/m/y")   # 2/4/2005
 parse_dbY(x)  = tryparse(Date, strip(String(x)), dateformat"d-u-y")   # 22-Nov-98
 
 # Complete zero-filled daily incidence series as (dates, counts).
-function daily_series(file, kind)
+function daily_series(file, kind; drop_index = false)
     df = CSV.read(file, DataFrame; normalizenames = false, stringtype = String)
     if kind == :agg
         d = parse_dmy.(string.(df[!, "Reported date"]))
@@ -62,6 +69,9 @@ function daily_series(file, kind)
     end
     raw = kind == :drc ? parse_dbY.(string.(df.DT_ONSET)) : parse_dmy.(string.(df.ONSET_DATE))
     d = Date.(filter(!isnothing, raw))
+    if drop_index && !isempty(d)
+        d = filter(!=(minimum(d)), d)   # drop index case(s) at earliest onset
+    end
     isempty(d) && return Date[], Int[]
     full = collect(minimum(d):Day(1):maximum(d))
     counts = [count(==(day), d) for day in full]
@@ -70,10 +80,11 @@ end
 
 rows = NamedTuple[]
 for (label, file, kind) in outbreaks
-    dates, cases = daily_series(file, kind)
+    dates, cases = daily_series(file, kind; drop_index = label in DROP_INDEX)
     total = sum(cases; init = 0)
-    note_kind = kind == :agg ?
-        "aggregate surveillance (irregular reporting; new cases per report)" : ""
+    note_kind = join(filter(!isempty, [
+        kind == :agg ? "aggregate surveillance (irregular reporting; new cases per report)" : "",
+        get(NOTES, label, "")]), "; ")
 
     if isempty(cases)
         push!(rows, (; outbreak = label, total_cases = total, n_days_full = 0,

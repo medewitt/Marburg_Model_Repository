@@ -46,11 +46,19 @@ outbreaks <- list(
   list(label = "Uganda 2012",      file = "MarburgUganda2012Line.csv",  kind = "line"),
   list(label = "Uganda 2014",      file = "MarburgUganda2014Line.csv",  kind = "line"),
   list(label = "Uganda 2017",      file = "MarburgUganda2017Line.csv",  kind = "line"),
-  list(label = "Tanzania 2023",    file = "MarburgTanzania2023Line.csv",kind = "line")
+  list(label = "Tanzania 2023",    file = "MarburgTanzania2023Line.csv",kind = "line"),
+  list(label = "Tanzania 2023 (excl. index)", file = "MarburgTanzania2023Line.csv",
+       kind = "line", drop_index = TRUE)
+)
+
+# explicit per-outbreak notes
+NOTES <- c(
+  "Tanzania 2023" = "all cases; r inflated by 9-day gap between index case (onset 27 Feb) and cluster",
+  "Tanzania 2023 (excl. index)" = "index case (onset 27 Feb) dropped; post-introduction human-to-human phase"
 )
 
 # Return a data.frame(date, cases) of the complete zero-filled daily series.
-daily_series <- function(file, kind) {
+daily_series <- function(file, kind, drop_index = FALSE) {
   df <- read.csv(file, check.names = FALSE, stringsAsFactors = FALSE)
   if (kind == "agg") {
     d <- as.Date(df[["Reported date"]], format = "%d/%m/%Y")
@@ -66,6 +74,7 @@ daily_series <- function(file, kind) {
     d <- as.Date(df[["ONSET_DATE"]], format = "%d/%m/%Y")
   }
   d <- d[!is.na(d)]
+  if (drop_index && length(d)) d <- d[d != min(d)]  # drop index case(s) at earliest onset
   if (length(d) == 0) return(data.frame(date = as.Date(character()), cases = integer()))
   full <- seq(min(d), max(d), by = "day")
   counts <- as.integer(table(factor(d, levels = as.character(full))))
@@ -74,10 +83,13 @@ daily_series <- function(file, kind) {
 
 res <- data.frame()
 for (ob in outbreaks) {
-  s <- daily_series(ob$file, ob$kind)
+  drop_index <- isTRUE(ob$drop_index)
+  s <- daily_series(ob$file, ob$kind, drop_index = drop_index)
   total <- sum(s$cases)
-  note_kind <- if (ob$kind == "agg")
-    "aggregate surveillance (irregular reporting; new cases per report)" else ""
+  note_parts <- c(if (ob$kind == "agg")
+    "aggregate surveillance (irregular reporting; new cases per report)" else "",
+    if (ob$label %in% names(NOTES)) NOTES[[ob$label]] else "")
+  note_kind <- paste(note_parts[nzchar(note_parts)], collapse = "; ")
 
   row <- data.frame(outbreak = ob$label, total_cases = total,
                     n_days_full = nrow(s), n_days_growth_phase = NA_integer_,
@@ -108,10 +120,10 @@ for (ob in outbreaks) {
   m <- glm(cases ~ t, family = poisson(), data = data.frame(cases = win$cases, t = t))
   r  <- coef(m)[["t"]]
   se <- sqrt(vcov(m)["t", "t"])
-  row$growth_rate_per_day <- round(r, 4)
+  row$growth_rate_per_day <- round(r, 4) + 0    # + 0 normalizes -0 to 0
   row$std_error <- round(se, 4)
-  row$ci_low  <- round(r - z * se, 4)
-  row$ci_high <- round(r + z * se, 4)
+  row$ci_low  <- round(r - z * se, 4) + 0
+  row$ci_high <- round(r + z * se, 4) + 0
   dt <- if (r > 0) log(2) / r else NA_real_
   row$doubling_time_days <- if (r > 0) round(dt, 1) else NA_real_
   for (k in names(SI)) {
