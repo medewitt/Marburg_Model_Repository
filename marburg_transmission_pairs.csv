@@ -14,3 +14,15 @@ South Africa 1975,SAF001,SAF003,1975-02-11,1975-02-27,medium,index -> nurse (top
 Uganda 2017,KWN001,KWN002,2017-09-13,2017-10-05,medium,index -> relative who nursed him/handled body at burial (peri-mortem; alt KWN004),22
 Uganda 2017,KWN001,KWN004,2017-09-13,2017-09-30,medium,index -> contact (onset 31-09 in Fig corrected to 30-09),17
 Uganda 2017,KWN002,KWN003,2017-10-05,2017-10-16,medium,"brother; contact of KWN001 & KWN002, infector assigned KWN002",11
+Uganda 2012,IBA010,KAB011,2012-09-07,2012-09-24,medium,Fig5B solid P10->P11 (Kabale chain head),17
+Uganda 2012,KAB011,KAB012,2012-09-24,2012-09-30,medium,Fig5B solid P11->P12,6
+Uganda 2012,KAB014,KAB020,2012-10-07,2012-10-18,medium,Fig5B solid P14->P20,11
+Uganda 2012,KAB014,KAB021,2012-10-07,2012-10-17,medium,Fig5B solid P14->P21,10
+Uganda 2012,KAB022,KAB023,2012-10-22,2012-10-29,medium,Fig5B solid P22->P23,7
+Uganda 2012,IBA024,IBA025,2012-09-27,2012-10-19,medium,Fig5B solid P24->P25,22
+Uganda 2012,IBA025,IBA026,2012-10-19,2012-10-28,medium,Fig5B solid P25->P26,9
+DRC 1999,DRC10,DRC11,1999-08-06,1999-08-18,high,Fig2 identical seq: husband -> wife,12
+DRC 1999,DRC06,DRC07,1999-05-01,1999-05-08,medium,Fig2 household (mother/grandmother/daughter); source = earliest onset,7
+DRC 1999,DRC06,DRC08,1999-05-01,1999-05-09,medium,Fig2 household; mother -> daughter,8
+DRC 1999,DRC31,DRC33,2000-08-11,2000-08-27,high,Fig2 identical seq: husband -> wife,16
+DRC 1999,DRC27,DRC29,2000-07-03,2000-07-14,high,Fig2 identical seq: brothers,11
