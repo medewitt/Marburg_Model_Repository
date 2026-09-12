@@ -12,6 +12,13 @@
 #      Report r with a large-sample (Wald) 95% CI and doubling time ln(2)/r.
 #   4. Outbreaks with peak daily incidence <= 1 or a growth phase < 3 days
 #      are point-source / too small to identify r and are reported as NA.
+#   5. Add a pseudo basic reproduction number R0 = exp(r * SI), treating the
+#      serial interval SI as a fixed generation interval. Pre-2014 Marburg
+#      serial-interval estimates of 9.3 and 11.2 days are used; the 95% CI is
+#      propagated from the growth-rate Wald CI. This exp(r * SI) mapping
+#      overestimates R0 when the doubling time is shorter than SI (flagged in
+#      the note column); the linear approximation 1 + r * SI is more
+#      conservative there.
 #
 # Data formats: Angola 2005 is aggregate surveillance (new cases per reported
 # date); all other files are line lists keyed on symptom-onset date
@@ -23,6 +30,7 @@ set.seed(1834)
 Sys.setlocale("LC_TIME", "C")  # ensure English month abbreviations for DRC dates
 
 z <- qnorm(0.975)
+SI <- c("9.3" = 9.3, "11.2" = 11.2)  # pre-2014 mean serial intervals (days)
 
 outbreaks <- list(
   list(label = "Angola 2005",      file = "MarburgAngola2005Data.csv",  kind = "agg"),
@@ -39,7 +47,8 @@ outbreaks <- list(
   list(label = "Uganda 2007",      file = "MarburgUganda2007Line.csv",  kind = "line"),
   list(label = "Uganda 2012",      file = "MarburgUganda2012Line.csv",  kind = "line"),
   list(label = "Uganda 2014",      file = "MarburgUganda2014Line.csv",  kind = "line"),
-  list(label = "Uganda 2017",      file = "MarburgUganda2017Line.csv",  kind = "line")
+  list(label = "Uganda 2017",      file = "MarburgUganda2017Line.csv",  kind = "line"),
+  list(label = "Tanzania 2023",    file = "MarburgTanzania2023Line.csv",kind = "line")
 )
 
 # Return a data.frame(date, cases) of the complete zero-filled daily series.
@@ -76,7 +85,11 @@ for (ob in outbreaks) {
                     n_days_full = nrow(s), n_days_growth_phase = NA_integer_,
                     cases_growth_phase = NA_integer_, growth_rate_per_day = NA_real_,
                     std_error = NA_real_, ci_low = NA_real_, ci_high = NA_real_,
-                    doubling_time_days = NA_real_, note = "", stringsAsFactors = FALSE)
+                    doubling_time_days = NA_real_, note = "", stringsAsFactors = FALSE,
+                    check.names = FALSE)
+  for (k in names(SI))
+    row[[paste0("pseudoR0_SI", k)]] <- row[[paste0("pseudoR0_SI", k, "_low")]] <-
+      row[[paste0("pseudoR0_SI", k, "_high")]] <- NA_real_
 
   if (nrow(s) == 0) { row$note <- "no parseable dates"; res <- rbind(res, row); next }
 
@@ -101,10 +114,26 @@ for (ob in outbreaks) {
   row$std_error <- round(se, 4)
   row$ci_low  <- round(r - z * se, 4)
   row$ci_high <- round(r + z * se, 4)
-  row$doubling_time_days <- if (r > 0) round(log(2) / r, 1) else NA_real_
-  row$note <- note_kind
+  dt <- if (r > 0) log(2) / r else NA_real_
+  row$doubling_time_days <- if (r > 0) round(dt, 1) else NA_real_
+  for (k in names(SI)) {
+    si <- SI[[k]]
+    row[[paste0("pseudoR0_SI", k)]]      <- round(exp(r  * si), 2)
+    row[[paste0("pseudoR0_SI", k, "_low")]]  <- round(exp((r - z * se) * si), 2)
+    row[[paste0("pseudoR0_SI", k, "_high")]] <- round(exp((r + z * se) * si), 2)
+  }
+  note_fit <- note_kind
+  if (r > 0 && dt < min(SI)) {
+    msg <- "doubling time < serial interval: exp(r*SI) pseudo R0 likely overestimated"
+    note_fit <- paste(c(note_kind, msg)[nzchar(c(note_kind, msg))], collapse = "; ")
+  }
+  row$note <- note_fit
   res <- rbind(res, row)
 }
 
+# order columns with note last
+r0cols <- unlist(lapply(names(SI), function(k)
+  paste0("pseudoR0_SI", k, c("", "_low", "_high"))))
+res <- res[, c(setdiff(names(res), c("note", r0cols)), r0cols, "note")]
 write.csv(res, "outbreak_growth_rates.csv", row.names = FALSE, na = "")
 print(res)
