@@ -1,0 +1,19 @@
+outbreak,total_cases,n_days_full,n_days_growth_phase,cases_growth_phase,growth_rate_per_day,std_error,ci_low,ci_high,doubling_time_days,pseudoR0_SI9.3,pseudoR0_SI9.3_low,pseudoR0_SI9.3_high,pseudoR0_SI11.2,pseudoR0_SI11.2_low,pseudoR0_SI11.2_high,note
+Angola 2005,440,17,1,132,,,,,,,,,,,,aggregate surveillance (irregular reporting; new cases per report); growth phase < 3 days
+Belgrade 1967,2,11,11,2,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+DRC 1999,127,757,173,67,0.0064,0.0025,0.0015,0.0113,108.2,1.06,1.01,1.11,1.07,1.02,1.13,
+Frankfurt 1967,6,18,1,3,,,,,,,,,,,,growth phase < 3 days
+Guinea 2021,1,1,1,1,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+Kenya 1980,2,17,17,2,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+Kenya 1987,1,1,1,1,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+Marburg 1967,24,96,18,19,0.0886,0.047,-0.0036,0.1808,7.8,1.82,0.97,2.68,1.99,0.96,3.02,
+South Africa 1975,3,17,17,3,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+Uganda (ND) 2008,1,1,1,1,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+Uganda (US) 2008,1,1,1,1,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+Uganda 2007,4,97,97,4,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+Uganda 2012,26,103,92,22,0.0163,0.0085,-0.0003,0.0329,42.5,1.15,1.0,1.31,1.18,1.0,1.37,
+Uganda 2014,1,1,1,1,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+Uganda 2017,3,34,34,3,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
+Tanzania 2023,9,44,12,6,0.2795,0.1509,-0.0164,0.5753,2.5,3.6,0.85,6.35,4.13,0.82,7.44,all cases; r inflated by 9-day gap between index case (onset 27 Feb) and cluster
+Tanzania 2023 (excl. index),8,35,3,5,0.0,0.5477,-1.0735,1.0735,,1.0,-8.98,10.98,1.0,-11.02,13.02,index case (onset 27 Feb) dropped; post-introduction human-to-human phase
+Rwanda 2024,66,49,26,50,0.1201,0.0234,0.0743,0.1658,5.8,2.12,1.69,2.54,2.35,1.83,2.86,"66 lab-confirmed cases by onset, digitized from NEJM Fig 1 (Nsanzimana 2025); 2 probable Aug cases excluded"
