@@ -1,0 +1,13 @@
+outbreak,infector_id,infectee_id,infector_onset,infectee_onset,confidence,link_basis,serial_interval_days
+Tanzania 2023,TZA001,TZA007,2023-02-27,2023-03-08,high,index -> HCW/cousin (cared for index),9
+Tanzania 2023,TZA001,TZA005,2023-02-27,2023-03-08,high,index -> HCW (attended index from Feb28),9
+Tanzania 2023,TZA001,TZA002,2023-02-27,2023-03-09,high,index -> cousin (escorted transfer Mar1),10
+Tanzania 2023,TZA001,TZA003,2023-02-27,2023-03-10,high,index -> aunt (cared for index at home),11
+Tanzania 2023,TZA001,TZA004,2023-02-27,2023-03-10,high,index -> lab HCW (malaria test Mar1),11
+Tanzania 2023,TZA001,TZA006,2023-02-27,2023-03-12,high,index -> mother (cared for index),13
+Tanzania 2023,TZA006,TZA008,2023-03-12,2023-03-19,high,mother -> grandchild (contact of Case4),7
+Tanzania 2023,TZA008,TZA009,2023-03-19,2023-04-11,low,child -> mother (co-admitted; infector ambiguous),23
+Belgrade 1967,BEL001,BEL002,1967-09-01,1967-09-11,high,index -> secondary (2-case chain),10
+Kenya 1980,KEN0801,KEN0802,1980-01-08,1980-01-24,high,index -> physician (2-case chain),16
+South Africa 1975,SAF001,SAF002,1975-02-11,1975-02-20,medium,index -> companion (topology assumed),9
+South Africa 1975,SAF001,SAF003,1975-02-11,1975-02-27,medium,index -> nurse (topology assumed),16
