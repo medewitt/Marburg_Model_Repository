@@ -1,11 +1,13 @@
-% Speed-strength plane for Marburg outbreaks.
-% x = intrinsic growth rate r (per day), y = mean generation interval T_g (days).
-% R0 contours use the Wallinga & Lipsitch (2007) relation for an exponentially
-% distributed generation interval: R0 = 1 + r*T_g  =>  T_g = (R0 - 1)/r.
-% Each outbreak is placed at its estimated r (with 95% CI as a horizontal
-% whisker) and spans the assumed pre-2014 serial-interval band 9.3-11.2 days
-% (vertical segment); the dot marks the band midpoint. Reading where an
-% outbreak's vertical segment crosses the contours gives its R0 range.
+% Speed-strength plane for Marburg outbreaks, with uncertainty in both axes.
+% x = intrinsic growth rate r (day^-1), 95% CI as a horizontal whisker.
+% y = mean generation interval T_g (days). T_g is era-specific: pre-2014
+%     outbreaks are centred at 9.3 d and 2020s outbreaks at 11 d, each with a
+%     95% band from Normal(mu, 1.0) (vertical whisker).
+% R0 contours use the gamma generation-interval form (Wallinga & Lipsitch 2007)
+%     R0 = (1 + r*T_g/kappa)^kappa at a representative CV = 0.6 (kappa = 1/CV^2),
+%     so T_g = kappa*(R0^{1/kappa}-1)/r. Point R0 estimates (median, 95%) come
+%     from the Monte Carlo in outbreak_R0_montecarlo.csv, which also samples CV.
+% Reading where an outbreak sits relative to the contours gives its R0.
 %
 % Compile with pdflatex (or lualatex) + pgfplots (>= 1.16).
 \documentclass[border=3pt]{standalone}
@@ -14,76 +16,72 @@
 \usepackage{amsmath}
 
 % Okabe-Ito colorblind-safe palette
-\definecolor{oiBlack}{RGB}{0,0,0}
 \definecolor{oiOrange}{RGB}{230,159,0}
-\definecolor{oiSky}{RGB}{86,180,233}
 \definecolor{oiGreen}{RGB}{0,158,115}
 \definecolor{oiBlue}{RGB}{0,114,178}
 \definecolor{oiVermil}{RGB}{213,94,0}
+\definecolor{oiBlack}{RGB}{0,0,0}
 
 \begin{document}
 \begin{tikzpicture}
 \begin{axis}[
-    width=13cm, height=9cm,
+    width=13cm, height=9.5cm,
     xlabel={Intrinsic growth rate $r$ (day$^{-1}$)},
     ylabel={Mean generation interval $T_g$ (days)},
-    xmin=-0.04, xmax=0.32,
-    ymin=0, ymax=14,
+    xmin=-0.04, xmax=0.32, ymin=0, ymax=14,
     axis lines=left,
-    xtick={-0.0,0.05,0.10,0.15,0.20,0.25,0.30},
-    ytick={0,2,4,6,8,9.3,11.2,14},
-    yticklabels={0,2,4,6,8,9.3,11.2,14},
-    tick label style={font=\small},
-    label style={font=\small},
-    clip=true,
+    xtick={0,0.05,0.10,0.15,0.20,0.25,0.30},
+    ytick={0,2,4,6,8,9.3,11,14}, yticklabels={0,2,4,6,8,9.3,11,14},
+    tick label style={font=\small}, label style={font=\small}, clip=true,
 ]
 
-% ---- serial-interval band 9.3-11.2 days (pre-2014 serial interval) ----
-\fill[gray!12] (axis cs:-0.04,9.3) rectangle (axis cs:0.32,11.2);
+% ---- era reference lines (mean T_g) ----
+\draw[gray!55,dashed] (axis cs:-0.04,9.3) -- (axis cs:0.32,9.3);
+\draw[gray!55,dashed] (axis cs:-0.04,11) -- (axis cs:0.32,11);
+\node[gray,font=\scriptsize,anchor=east] at (axis cs:0.318,8.7){pre-2014};
+\node[gray,font=\scriptsize,anchor=east] at (axis cs:0.318,11.5){2020s};
 
-% ---- R0 contours: T_g = (R0-1)/r ----
-\addplot[gray!55,thick,domain=0.0357:0.32,samples=100]{0.5/x};
-\addplot[gray!55,thick,domain=0.0714:0.32,samples=100]{1.0/x};
-\addplot[gray!55,thick,domain=0.1429:0.32,samples=100]{2.0/x};
-\addplot[gray!55,thick,domain=0.2143:0.32,samples=100]{3.0/x};
-\node[gray,font=\scriptsize] at (axis cs:0.041,12.9){$R_0{=}1.5$};
-\node[gray,font=\scriptsize] at (axis cs:0.083,12.9){$R_0{=}2$};
-\node[gray,font=\scriptsize] at (axis cs:0.163,12.9){$R_0{=}3$};
-\node[gray,font=\scriptsize] at (axis cs:0.243,12.9){$R_0{=}4$};
+% ---- gamma-GI R0 contours at CV=0.6: T_g = c/r ----
+\addplot[gray!55,thick,domain=0.0307:0.32,samples=100]{0.430/x};
+\addplot[gray!55,thick,domain=0.0562:0.32,samples=100]{0.787/x};
+\addplot[gray!55,thick,domain=0.0980:0.32,samples=100]{1.372/x};
+\addplot[gray!55,thick,domain=0.1271:0.32,samples=100]{1.780/x};
+\node[gray,font=\scriptsize] at (axis cs:0.036,12.9){$R_0{=}1.5$};
+\node[gray,font=\scriptsize] at (axis cs:0.064,12.9){$R_0{=}2$};
+\node[gray,font=\scriptsize] at (axis cs:0.109,12.9){$R_0{=}3$};
+\node[gray,font=\scriptsize] at (axis cs:0.142,12.9){$R_0{=}4$};
 
-% ---- R0 = 1 threshold (r = 0) ----
+% ---- R0 = 1 threshold ----
 \draw[gray,dashed] (axis cs:0,0) -- (axis cs:0,14);
 \node[gray,font=\scriptsize,rotate=90,anchor=south] at (axis cs:0,2.2){$R_0=1$};
 
-% ---- outbreaks: \obk{r}{r_lo}{r_hi}{color}  draws whisker + band segment + dot ----
-\newcommand{\obk}[4]{%
-  \draw[#4,opacity=0.55,line width=1pt] (axis cs:#2,10.25) -- (axis cs:#3,10.25);%
-  \draw[#4,line width=1.6pt] (axis cs:#1,9.3) -- (axis cs:#1,11.2);%
-  \fill[#4] (axis cs:#1,10.25) circle (2.6pt);%
+% \pt{r}{rlo}{rhi}{tg}{tglo}{tghi}{color}
+\newcommand{\pt}[7]{%
+  \draw[#7,opacity=0.55,line width=1pt] (axis cs:#2,#4) -- (axis cs:#3,#4);%
+  \draw[#7,opacity=0.55,line width=1pt] (axis cs:#1,#5) -- (axis cs:#1,#6);%
+  \fill[#7] (axis cs:#1,#4) circle (2.6pt);%
 }
+% pre-2014 (T_g = 9.3, band 7.34-11.26)
+\pt{0.0064}{0.0015}{0.0113}{9.3}{7.34}{11.26}{oiBlue}    % DRC 1999
+\pt{0.0163}{-0.0003}{0.0329}{9.3}{7.34}{11.26}{oiGreen}  % Uganda 2012
+\pt{0.0886}{-0.0036}{0.1808}{9.3}{7.34}{11.26}{oiBlack}  % Marburg 1967
+% 2020s (T_g = 11.0, band 9.04-12.96)
+\pt{0.1201}{0.0743}{0.1658}{11}{9.04}{12.96}{oiOrange}   % Rwanda 2024
+% Tanzania 2023: upper r CI = 0.575 off-axis (arrow)
+\draw[oiVermil,opacity=0.55,line width=1pt,-stealth] (axis cs:-0.0164,11) -- (axis cs:0.315,11);
+\draw[oiVermil,opacity=0.55,line width=1pt] (axis cs:0.2795,9.04) -- (axis cs:0.2795,12.96);
+\fill[oiVermil] (axis cs:0.2795,11) circle (2.6pt);
 
-% DRC 1999
-\obk{0.0064}{0.0015}{0.0113}{oiBlue}
-% Uganda 2012
-\obk{0.0163}{-0.0003}{0.0329}{oiGreen}
-% Marburg 1967
-\obk{0.0886}{-0.0036}{0.1808}{oiBlack}
-% Rwanda 2024
-\obk{0.1201}{0.0743}{0.1658}{oiOrange}
-% Tanzania 2023 (all cases) -- upper 95% CI = 0.575 runs off-axis
-\draw[oiVermil,opacity=0.55,line width=1pt,-stealth] (axis cs:-0.0164,10.25) -- (axis cs:0.315,10.25);
-\draw[oiVermil,line width=1.6pt] (axis cs:0.2795,9.3) -- (axis cs:0.2795,11.2);
-\fill[oiVermil] (axis cs:0.2795,10.25) circle (2.6pt);
-
-% ---- labels with leader lines ----
-\node[oiBlue,font=\scriptsize,anchor=east] (dLbl) at (axis cs:0.010,6.4){DRC 1999};
-\draw[oiBlue,thin] (dLbl.north) -- (axis cs:0.0064,9.2);
-\node[oiGreen,font=\scriptsize,anchor=west] (uLbl) at (axis cs:0.030,6.9){Uganda 2012};
-\draw[oiGreen,thin] (uLbl.north west) -- (axis cs:0.0163,9.2);
-\node[oiBlack,font=\scriptsize,anchor=south] at (axis cs:0.0886,11.35){Marburg 1967};
-\node[oiOrange,font=\scriptsize,anchor=north] at (axis cs:0.1201,9.15){Rwanda 2024};
-\node[oiVermil,font=\scriptsize,anchor=south] at (axis cs:0.262,11.35){Tanzania 2023};
-\node[oiVermil,font=\scriptsize,anchor=west] at (axis cs:0.285,9.5){\,CI$\to0.58$};
+% ---- labels (R0 median from Monte Carlo) ----
+\node[oiBlue,font=\scriptsize,anchor=east] (d) at (axis cs:-0.005,5.6){DRC 1999 ($R_0{\approx}1.1$)};
+\draw[oiBlue,thin] (d.north east) -- (axis cs:0.0064,9.0);
+\node[oiGreen,font=\scriptsize,anchor=west] (u) at (axis cs:0.028,5.6){Uganda 2012 ($R_0{\approx}1.2$)};
+\draw[oiGreen,thin] (u.north west) -- (axis cs:0.0163,9.0);
+\node[oiBlack,font=\scriptsize,anchor=north] at (axis cs:0.0886,8.9){Marburg 1967 ($R_0{\approx}2.0$)};
+\node[oiOrange,font=\scriptsize,anchor=south] (rw) at (axis cs:0.128,12.2){Rwanda 2024 ($R_0{\approx}2.9$)};
+\draw[oiOrange,thin] (rw.south) -- (axis cs:0.1201,11.15);
+\node[oiVermil,font=\scriptsize,anchor=south] at (axis cs:0.235,12.5){Tanzania 2023};
+\node[oiVermil,font=\scriptsize,anchor=west] at (axis cs:0.288,10.2){\,$r$ CI$\to0.58$};
 
 \end{axis}
 \end{tikzpicture}
