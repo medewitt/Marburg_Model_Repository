@@ -11,3 +11,6 @@ Belgrade 1967,BEL001,BEL002,1967-09-01,1967-09-11,high,index -> secondary (2-cas
 Kenya 1980,KEN0801,KEN0802,1980-01-08,1980-01-24,high,index -> physician (2-case chain),16
 South Africa 1975,SAF001,SAF002,1975-02-11,1975-02-20,medium,index -> companion (topology assumed),9
 South Africa 1975,SAF001,SAF003,1975-02-11,1975-02-27,medium,index -> nurse (topology assumed),16
+Uganda 2017,KWN001,KWN002,2017-09-13,2017-10-05,medium,index -> relative who nursed him/handled body at burial (peri-mortem; alt KWN004),22
+Uganda 2017,KWN001,KWN004,2017-09-13,2017-09-30,medium,index -> contact (onset 31-09 in Fig corrected to 30-09),17
+Uganda 2017,KWN002,KWN003,2017-10-05,2017-10-16,medium,"brother; contact of KWN001 & KWN002, infector assigned KWN002",11

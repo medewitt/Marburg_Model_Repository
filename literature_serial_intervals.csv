@@ -1,0 +1,3 @@
+population,distribution,mean_days,sd_days,cv,source,doi
+"Marburg (all 15 outbreaks, pooled line lists)",gamma,9.2,4.4,0.478,"Qian et al. 2023, medRxiv preprint",10.1101/2022.06.17.22276538
+"Ebola Zaire (comparator, NOT Marburg)",gamma,11.6,6.3,0.543,"WHO Ebola Response Team, NEJM 2014 (cited in Qian Table 1)",10.1056/NEJMoa1411100

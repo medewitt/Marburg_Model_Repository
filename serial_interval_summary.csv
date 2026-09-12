@@ -1,4 +1,4 @@
 set,n_pairs,mean,sd,cv,median,gamma_shape,gamma_scale,gamma_mean
 high only,9,10.67,2.6,0.244,10.0,16.86,0.63,10.67
-high+medium,11,11.0,2.9,0.263,10.0,14.4,0.76,11.0
-all incl low,12,12.0,4.43,0.369,10.5,7.33,1.64,12.0
+high+medium,14,12.21,4.12,0.337,11.0,8.8,1.39,12.21
+all incl low,15,12.93,4.85,0.375,11.0,7.12,1.82,12.93
