@@ -48,13 +48,15 @@ outbreaks <- list(
   list(label = "Uganda 2017",      file = "MarburgUganda2017Line.csv",  kind = "line"),
   list(label = "Tanzania 2023",    file = "MarburgTanzania2023Line.csv",kind = "line"),
   list(label = "Tanzania 2023 (excl. index)", file = "MarburgTanzania2023Line.csv",
-       kind = "line", drop_index = TRUE)
+       kind = "line", drop_index = TRUE),
+  list(label = "Rwanda 2024",    file = "MarburgRwanda2024Line.csv",  kind = "line")
 )
 
 # explicit per-outbreak notes
 NOTES <- c(
   "Tanzania 2023" = "all cases; r inflated by 9-day gap between index case (onset 27 Feb) and cluster",
-  "Tanzania 2023 (excl. index)" = "index case (onset 27 Feb) dropped; post-introduction human-to-human phase"
+  "Tanzania 2023 (excl. index)" = "index case (onset 27 Feb) dropped; post-introduction human-to-human phase",
+  "Rwanda 2024" = "66 lab-confirmed cases by onset, digitized from NEJM Fig 1 (Nsanzimana 2025); 2 probable Aug cases excluded"
 )
 
 # Return a data.frame(date, cases) of the complete zero-filled daily series.

@@ -16,3 +16,4 @@ Uganda 2014,1,1,1,1,,,,,,,,,,,,point-source / no growth phase: peak daily incide
 Uganda 2017,3,34,34,3,,,,,,,,,,,,point-source / no growth phase: peak daily incidence <= 1
 Tanzania 2023,9,44,12,6,0.2795,0.1509,-0.0164,0.5753,2.5,3.6,0.85,6.35,4.13,0.82,7.44,all cases; r inflated by 9-day gap between index case (onset 27 Feb) and cluster
 Tanzania 2023 (excl. index),8,35,3,5,0.0,0.5477,-1.0735,1.0735,,1.0,-8.98,10.98,1.0,-11.02,13.02,index case (onset 27 Feb) dropped; post-introduction human-to-human phase
+Rwanda 2024,66,49,26,50,0.1201,0.0234,0.0743,0.1658,5.8,2.12,1.69,2.54,2.35,1.83,2.86,"66 lab-confirmed cases by onset, digitized from NEJM Fig 1 (Nsanzimana 2025); 2 probable Aug cases excluded"

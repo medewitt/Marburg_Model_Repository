@@ -44,12 +44,14 @@ outbreaks = [
     ("Uganda 2017",       "MarburgUganda2017Line.csv",   :line),
     ("Tanzania 2023",     "MarburgTanzania2023Line.csv", :line),
     ("Tanzania 2023 (excl. index)", "MarburgTanzania2023Line.csv", :line),
+    ("Rwanda 2024",       "MarburgRwanda2024Line.csv",   :line),
 ]
 
 const DROP_INDEX = Set(["Tanzania 2023 (excl. index)"])  # drop index case (earliest onset)
 const NOTES = Dict(
     "Tanzania 2023" => "all cases; r inflated by 9-day gap between index case (onset 27 Feb) and cluster",
     "Tanzania 2023 (excl. index)" => "index case (onset 27 Feb) dropped; post-introduction human-to-human phase",
+    "Rwanda 2024" => "66 lab-confirmed cases by onset, digitized from NEJM Fig 1 (Nsanzimana 2025); 2 probable Aug cases excluded",
 )
 
 parse_dmy(x)  = tryparse(Date, strip(String(x)), dateformat"d/m/y")   # 2/4/2005
