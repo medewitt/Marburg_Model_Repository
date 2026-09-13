@@ -1,27 +1,24 @@
-# Monte Carlo pseudo R0 with an outbreak-informed generation interval.
+# Monte Carlo pseudo-R0 with an outbreak-informed generation interval.
 #
-# For each outbreak with an estimable growth rate we propagate:
-#   1. growth rate   r  ~ Normal(r_hat, se_r)  (GLM Wald);
-#   2. mean generation interval T_g ~ Normal(mu, se_mu), truncated > 0, where
-#      mu is the mean serial interval of that outbreak's reconstructed
-#      transmission pairs when it has >= 3 (se_mu = pair SD / sqrt(n)),
-#      otherwise the pooled Marburg estimate mu = 9.2 d (Qian et al. 2023,
-#      medRxiv 10.1101/2022.06.17.22276538; se ~ 0.7).
-#   3. GI dispersion: the coefficient of variation is fixed at the pooled
-#      literature value CV = 4.4/9.2 = 0.478 for ALL outbreaks. Per-outbreak
-#      pair samples are star-shaped (most share one infector) so their SD is
-#      not a reliable dispersion; only the mean is taken from the pairs.
+# Growth rate is the NEGATIVE BINOMIAL estimate (r_nb, se_nb from
+# outbreak_growth_rates.csv). The generation-interval mean is the DOUBLE
+# INTERVAL-CENSORED gamma mean of that outbreak's high+medium transmission pairs
+# when it has >= 3 (primarycensored, pwindow = swindow = 1; matches
+# estimate_serial_interval.R), otherwise the pooled Qian et al. 2023 mean 9.2 d.
+# GI dispersion is fixed at the pooled literature CV = 0.478 for all outbreaks:
+# per-outbreak pair samples are star-shaped and their SD is not a reliable
+# dispersion, so only the mean is taken from the pairs.
 #
-# R0 = (1 + r*T_g/kappa)^kappa, kappa = 1/CV^2 (gamma generation interval).
-# Undefined when the base <= 0 (strong decline); such draws are dropped.
-# Seed 1834; N = 2e5.
+# R0 = (1 + r*T_g/kappa)^kappa, kappa = 1/CV^2 (gamma generation interval;
+# Wallinga & Lipsitch 2007). Draws with base <= 0 (strong decline) are dropped.
+# Seed 1834; N = 2e5. Propagates r ~ Normal(r_nb, se_nb) and
+# T_g ~ Normal(mu, se_mu) truncated to (0.1, 60).
 
 set.seed(1834)
+requireNamespace("primarycensored")
 N <- 200000L
 POOL_MEAN <- 9.2; POOL_SE <- 0.7; POOL_CV <- round(4.4 / 9.2, 3)  # 0.478
-MIN_PAIRS <- 3L
-Z <- qnorm(0.975)
-KAPPA <- 1 / POOL_CV^2
+MIN_PAIRS <- 3L; Z <- qnorm(0.975); KAPPA <- 1 / POOL_CV^2
 
 rtnorm <- function(n, mean, sd, lo = -Inf, hi = Inf) {
   x <- rnorm(n, mean, sd)
@@ -29,24 +26,35 @@ rtnorm <- function(n, mean, sd, lo = -Inf, hi = Inf) {
   x
 }
 
+# censored gamma mean of a daily-resolution delay sample (matches SI script)
+cens_gamma_mean <- function(x) {
+  nll <- function(lp) {
+    p <- exp(lp)
+    d <- primarycensored::dprimarycensored(x, pgamma, shape = p[1], scale = p[2],
+                                           pwindow = 1, swindow = 1)
+    -sum(log(pmax(d, 1e-300)))
+  }
+  m <- mean(x); v <- var(x)
+  o <- optim(log(c(m^2 / v, v / m)), nll, method = "Nelder-Mead",
+             control = list(reltol = 1e-10, maxit = 5000))
+  prod(exp(o$par))  # shape * scale
+}
+
 pairs <- read.csv("marburg_transmission_pairs.csv", stringsAsFactors = FALSE)
+pairs$si <- as.integer(as.Date(pairs$infectee_onset) - as.Date(pairs$infector_onset))
 pairs <- pairs[pairs$confidence %in% c("high", "medium"), ]
-pstat <- aggregate(serial_interval_days ~ outbreak, pairs,
-                   function(v) c(mean = mean(v), sd = sd(v), n = length(v)))
-pstat <- do.call(rbind, lapply(seq_len(nrow(pstat)), function(i)
-  data.frame(outbreak = pstat$outbreak[i], mean = pstat$serial_interval_days[i, "mean"],
-             sd = pstat$serial_interval_days[i, "sd"], n = pstat$serial_interval_days[i, "n"])))
 
 gr <- read.csv("outbreak_growth_rates.csv", check.names = FALSE, stringsAsFactors = FALSE)
-gr <- gr[!is.na(gr$growth_rate_per_day), ]
+gr <- gr[!is.na(gr$r_nb), ]
 
 out <- data.frame()
 for (i in seq_len(nrow(gr))) {
-  label <- gr$outbreak[i]; rh <- gr$growth_rate_per_day[i]; se <- gr$std_error[i]
+  label <- gr$outbreak[i]; rh <- gr$r_nb[i]; se <- gr$se_nb[i]
   key <- sub(" \\(excl. index\\)$", "", label)
-  ps <- pstat[pstat$outbreak == key, ]
-  if (nrow(ps) == 1 && ps$n >= MIN_PAIRS) {
-    mu <- ps$mean; mse <- ps$sd / sqrt(ps$n); src <- sprintf("outbreak-pair mean (n=%d)", ps$n)
+  x <- pairs$si[pairs$outbreak == key]
+  if (length(x) >= MIN_PAIRS) {
+    mu <- cens_gamma_mean(x); mse <- sd(x) / sqrt(length(x))
+    src <- sprintf("outbreak-pair censored mean (n=%d)", length(x))
   } else { mu <- POOL_MEAN; mse <- POOL_SE; src <- "Qian pooled mean" }
   r  <- rnorm(N, rh, se)
   tg <- rtnorm(N, mu, mse, lo = 0.1, hi = 60)

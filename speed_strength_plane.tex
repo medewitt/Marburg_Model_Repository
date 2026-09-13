@@ -60,11 +60,11 @@
   \draw[#7,opacity=0.6,line width=1pt] (axis cs:#1,#5) -- (axis cs:#1,#6);%
   \fill[#7] (axis cs:#1,#4) circle (2.6pt);%
 }
-% pooled T_g = 9.2, mean-SE band 7.83-10.57
-\pt{0.0064}{0.0015}{0.0113}{9.2}{7.83}{10.57}{oiBlue}     % DRC 1999
-\pt{0.0163}{-0.0003}{0.0329}{9.2}{7.83}{10.57}{oiGreen}   % Uganda 2012
-\pt{0.0886}{-0.0036}{0.1808}{9.2}{7.83}{10.57}{oiBlack}   % Marburg 1967
-\pt{0.1201}{0.0743}{0.1658}{9.2}{7.83}{10.57}{oiOrange}   % Rwanda 2024
+% pooled T_g = 9.2, mean-SE band 7.83-10.57; r is the negative binomial estimate
+\pt{0.0065}{0.0012}{0.0117}{9.2}{7.83}{10.57}{oiBlue}     % DRC 1999
+\pt{0.0163}{-0.0003}{0.0329}{9.2}{7.83}{10.57}{oiGreen}   % Uganda 2012 (NB=Poisson)
+\pt{0.0885}{-0.0175}{0.1945}{9.2}{7.83}{10.57}{oiBlack}   % Marburg 1967
+\pt{0.1226}{0.0642}{0.1811}{9.2}{7.83}{10.57}{oiOrange}   % Rwanda 2024
 % Tanzania 2023: own pair mean 10.0 (SE band 8.6-11.4); upper r CI 0.575 off-axis
 \draw[oiVermil,opacity=0.6,line width=1pt,-stealth] (axis cs:-0.0164,10.0) -- (axis cs:0.315,10.0);
 \draw[oiVermil,opacity=0.6,line width=1pt] (axis cs:0.2795,8.6) -- (axis cs:0.2795,11.4);
@@ -77,8 +77,8 @@
 \draw[oiGreen,thin] (u.north west) -- (axis cs:0.0163,7.8);
 \node[oiBlack,font=\scriptsize,anchor=south] (m) at (axis cs:0.078,10.9){Marburg 1967 ($R_0{\approx}2.1$)};
 \draw[oiBlack,thin] (m.south) -- (axis cs:0.0886,10.55);
-\node[oiOrange,font=\scriptsize,anchor=north] (rw) at (axis cs:0.1201,7.6){Rwanda 2024 ($R_0{\approx}2.7$)};
-\draw[oiOrange,thin] (rw.north) -- (axis cs:0.1201,7.85);
+\node[oiOrange,font=\scriptsize,anchor=north] (rw) at (axis cs:0.1226,7.6){Rwanda 2024 ($R_0{\approx}2.7$)};
+\draw[oiOrange,thin] (rw.north) -- (axis cs:0.1226,7.85);
 \node[oiVermil,font=\scriptsize,anchor=south] at (axis cs:0.244,11.1){Tanzania 2023};
 \node[oiVermil,font=\scriptsize,anchor=west] at (axis cs:0.286,9.0){\,$r$ CI$\to0.58$};
 
