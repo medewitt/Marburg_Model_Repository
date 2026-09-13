@@ -1,7 +1,7 @@
 outbreak,gi_source,gi_mean_days,gi_cv_pooled,r_per_day,r_lo,r_hi,R0_gamma_median,R0_gamma_lo,R0_gamma_hi
-DRC 1999,outbreak-pair mean (n=5),10.8,0.478,0.0064,0.0015,0.0113,1.07,1.02,1.14
-Marburg 1967,Qian pooled mean,9.2,0.478,0.0886,-0.0036,0.1808,2.1,0.97,4.16
-Uganda 2012,outbreak-pair mean (n=7),11.71,0.478,0.0163,-0.0003,0.0329,1.2,1.0,1.49
-Tanzania 2023,outbreak-pair mean (n=7),10.0,0.478,0.2795,-0.0164,0.5753,8.59,0.85,40.74
-Tanzania 2023 (excl. index),outbreak-pair mean (n=7),10.0,0.478,0.0,-1.0735,1.0735,3.55,0.0,265.95
-Rwanda 2024,Qian pooled mean,9.2,0.478,0.1201,0.0743,0.1658,2.66,1.86,3.84
+DRC 1999,outbreak-pair censored mean (n=5),10.8,0.478,0.0065,0.0012,0.0118,1.07,1.01,1.14
+Marburg 1967,Qian pooled mean,9.2,0.478,0.0885,-0.0175,0.1945,2.1,0.85,4.55
+Uganda 2012,outbreak-pair censored mean (n=7),11.71,0.478,0.0163,-0.0004,0.033,1.2,1.0,1.49
+Tanzania 2023,outbreak-pair censored mean (n=7),10.0,0.478,0.2795,-0.0163,0.5753,8.59,0.85,40.74
+Tanzania 2023 (excl. index),outbreak-pair censored mean (n=7),10.0,0.478,0.0,-1.0735,1.0735,3.55,0.0,265.97
+Rwanda 2024,Qian pooled mean,9.2,0.478,0.1226,0.0642,0.181,2.71,1.73,4.23

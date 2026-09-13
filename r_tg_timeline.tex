@@ -41,8 +41,9 @@
 \nextgroupplot[ymin=-0.05, ymax=0.35, ylabel={Growth rate $r$ (day$^{-1}$)},
     title={\small Intrinsic growth rate and generation interval over time}]
 \draw[gray!60,dashed] (axis cs:1963,0) -- (axis cs:2032,0);
-\rpt{1967}{0.0886}{-0.0036}{0.1808}{oiBlack}{Marburg 1967}{0.6}
-\rpt{1999}{0.0064}{0.0015}{0.0113}{oiBlue}{DRC 1999}{0.6}
+% growth rate r is the negative binomial estimate (Poisson where NB unidentified)
+\rpt{1967}{0.0885}{-0.0175}{0.1945}{oiBlack}{Marburg 1967}{0.6}
+\rpt{1999}{0.0065}{0.0012}{0.0117}{oiBlue}{DRC 1999}{0.6}
 \rpt{2012}{0.0163}{-0.0003}{0.0329}{oiGreen}{Uganda 2012}{0.6}
 % Tanzania 2023: upper CI 0.575 off-panel (arrow)
 \draw[oiVermil,line width=1.3pt] (axis cs:2023,-0.0164) -- (axis cs:2023,0.32);
@@ -50,7 +51,7 @@
 \fill[oiVermil] (axis cs:2023,0.2795) circle (2.6pt);
 \node[oiVermil,font=\scriptsize,anchor=west] at (axis cs:2023.6,0.2795){Tanzania 2023};
 \node[oiVermil,font=\scriptsize] at (axis cs:2023,0.305){\,CI$\to$0.58};
-\rpt{2024}{0.1201}{0.0743}{0.1658}{oiOrange}{Rwanda 2024}{0.6}
+\rpt{2024}{0.1226}{0.0642}{0.1811}{oiOrange}{Rwanda 2024}{0.6}
 
 % ---------- bottom: generation interval ----------
 \nextgroupplot[ymin=0, ymax=24, ylabel={Mean serial interval $T_g$ (days)},

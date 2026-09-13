@@ -1,4 +1,4 @@
-set,n_pairs,mean,sd,cv,median,gamma_shape,gamma_scale,gamma_mean
-high only,12,11.25,2.7,0.24,11.0,17.35,0.65,11.25
-high+medium,26,11.81,4.37,0.37,11.0,7.29,1.62,11.81
-all incl low,27,12.22,4.8,0.393,11.0,6.49,1.88,12.22
+set,n_pairs,mean_censored,sd_censored,cv_censored,mean_lo,mean_hi,gamma_shape,gamma_scale,sd_naive,cv_naive,best_family,aic_gamma,aic_lognormal,aic_weibull
+high only,12,11.25,2.52,0.224,9.75,12.83,19.994,0.563,2.7,0.24,lognormal,60.11,59.97,61.55
+high+medium,26,11.81,4.06,0.344,10.31,13.46,8.459,1.396,4.37,0.37,lognormal,148.76,147.52,152.52
+all incl low,27,12.22,4.45,0.365,10.48,14.22,7.527,1.624,4.8,0.393,lognormal,159.02,157.63,162.68
