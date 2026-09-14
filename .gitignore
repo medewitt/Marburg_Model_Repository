@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Julia
+Manifest.toml
+Julia/*
+julia/*
+

@@ -33,9 +33,10 @@ Outbreaks with peak daily incidence <= 1 or an ascending phase < 3 days are repo
 Infector-infectee pairs were reconstructed from three source types, each pair tagged with a confidence tier (`high`/`medium`/`low`) and its basis (`marburg_transmission_pairs.csv`):
 
 - **Two-case chains** from the repo `INTRO` flag (index vs secondary): Belgrade 1967, Kenya 1980.
+  Belgrade onset dates and case details are taken from Crozier & Kuhn 2020 (Microbiol Mol Biol Rev, "A Forgotten Episode of Marburg Virus Disease: Belgrade, Yugoslavia, 1967"): the 45-year-old veterinarian Ž.St. (onset 1 Sep 1967) infected his 44-year-old wife R.St. (onset 11 Sep 1967) via nursing/fomite contact, a serial interval of 10 days.
 - **Published case narratives**: the Tanzania 2023 tree from the case-by-case descriptions in Mmbaga et al. (index -> caregivers/HCWs, then mother -> grandchild), mapped to line-list onset dates.
 - **Published transmission-tree figures**, digitized:
-  - South Africa 1975: index -> companion and index -> nurse (Slenczka & Klenk, J Infect Dis 2007;196(S2):S131-5).
+  - South Africa 1975: the primary investigation (Conrad et al., Am J Trop Med Hyg 1978;27(6):1210-5) establishes a person-to-person chain index (patient 1, onset 12 Feb) -> companion (patient 2, onset 19 Feb) -> nurse (patient 3, onset 26 Feb), each a 7-day serial interval; only patient 1 had the arthropod exposure (Wankie), patient 2 nursed patient 1, and patient 3 sat up with patient 2 the night patient 1 died. This corrects an earlier index -> nurse assignment (a skipped generation) taken from the Slenczka & Klenk 2007 review.
   - Uganda 2017 Kween: Figure 2 of Nyakarahuka et al., PLoS NTD 2019 (`10.1371/journal.pntd.0007257`).
   - Uganda 2012: Figure 5B of Knust et al., JID 2015 (`10.1093/infdis/jiv351`); Patient N was matched to the line-list ID by age and sex (1:1), and only solid (confirmed-contact) arrows were used, with exact onset dates from the line list. Dashed/tentative links and the tangled early Ibanda household were excluded.
   - DRC 1998-2000: Figure 2 of Bausch et al., NEJM 2006;355:909-919 (PMID 16943403), whose identical-sequence, epidemiologically-linked household pairs carry onset dates encoded in the sequence labels (e.g. `10DRC99aug06`).

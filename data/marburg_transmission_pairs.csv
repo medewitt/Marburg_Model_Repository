@@ -1,0 +1,28 @@
+outbreak,infector_id,infectee_id,infector_onset,infectee_onset,confidence,link_basis,serial_interval_days
+Tanzania 2023,TZA001,TZA007,2023-02-27,2023-03-08,high,index -> HCW/cousin (cared for index),9
+Tanzania 2023,TZA001,TZA005,2023-02-27,2023-03-08,high,index -> HCW (attended index from Feb28),9
+Tanzania 2023,TZA001,TZA002,2023-02-27,2023-03-09,high,index -> cousin (escorted transfer Mar1),10
+Tanzania 2023,TZA001,TZA003,2023-02-27,2023-03-10,high,index -> aunt (cared for index at home),11
+Tanzania 2023,TZA001,TZA004,2023-02-27,2023-03-10,high,index -> lab HCW (malaria test Mar1),11
+Tanzania 2023,TZA001,TZA006,2023-02-27,2023-03-12,high,index -> mother (cared for index),13
+Tanzania 2023,TZA006,TZA008,2023-03-12,2023-03-19,high,mother -> grandchild (contact of Case4),7
+Tanzania 2023,TZA008,TZA009,2023-03-19,2023-04-11,low,child -> mother (co-admitted; infector ambiguous),23
+Belgrade 1967,BEL001,BEL002,1967-09-01,1967-09-11,high,vet (necropsy index) -> wife (nursing/fomite contact); Crozier & Kuhn 2020,10
+Kenya 1980,KEN0801,KEN0802,1980-01-08,1980-01-24,high,index -> physician (2-case chain),16
+South Africa 1975,SAF001,SAF002,1975-02-12,1975-02-19,high,index (Wankie arthropod bite) -> companion (nursed index); Conrad et al. 1978,7
+South Africa 1975,SAF002,SAF003,1975-02-19,1975-02-26,medium,companion -> nurse (sat up with patient 2 the night of patient 1 death); Conrad et al. 1978,7
+Uganda 2017,KWN001,KWN002,2017-09-13,2017-10-05,medium,index -> relative who nursed him/handled body at burial (peri-mortem; alt KWN004),22
+Uganda 2017,KWN001,KWN004,2017-09-13,2017-09-30,medium,index -> contact (onset 31-09 in Fig corrected to 30-09),17
+Uganda 2017,KWN002,KWN003,2017-10-05,2017-10-16,medium,"brother; contact of KWN001 & KWN002, infector assigned KWN002",11
+Uganda 2012,IBA010,KAB011,2012-09-07,2012-09-24,medium,Fig5B solid P10->P11 (Kabale chain head),17
+Uganda 2012,KAB011,KAB012,2012-09-24,2012-09-30,medium,Fig5B solid P11->P12,6
+Uganda 2012,KAB014,KAB020,2012-10-07,2012-10-18,medium,Fig5B solid P14->P20,11
+Uganda 2012,KAB014,KAB021,2012-10-07,2012-10-17,medium,Fig5B solid P14->P21,10
+Uganda 2012,KAB022,KAB023,2012-10-22,2012-10-29,medium,Fig5B solid P22->P23,7
+Uganda 2012,IBA024,IBA025,2012-09-27,2012-10-19,medium,Fig5B solid P24->P25,22
+Uganda 2012,IBA025,IBA026,2012-10-19,2012-10-28,medium,Fig5B solid P25->P26,9
+DRC 1999,DRC10,DRC11,1999-08-06,1999-08-18,high,Fig2 identical seq: husband -> wife,12
+DRC 1999,DRC06,DRC07,1999-05-01,1999-05-08,medium,Fig2 household (mother/grandmother/daughter); source = earliest onset,7
+DRC 1999,DRC06,DRC08,1999-05-01,1999-05-09,medium,Fig2 household; mother -> daughter,8
+DRC 1999,DRC31,DRC33,2000-08-11,2000-08-27,high,Fig2 identical seq: husband -> wife,16
+DRC 1999,DRC27,DRC29,2000-07-03,2000-07-14,high,Fig2 identical seq: brothers,11

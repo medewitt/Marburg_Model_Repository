@@ -1,0 +1,122 @@
+version: '3'
+
+# Marburg model repository task runner.
+#
+# Layout:
+#   data/     raw inputs (line lists, transmission pairs, posterior draws)
+#   R/        R scripts        julia/  Julia scripts     python/  Python scripts
+#   outputs/  generated tables and figures (CSV, TeX)
+#
+# Scripts run with their language folder as the working directory, so they read
+# ../data and write ../outputs. The Python venv lives outside the synced
+# ProtonDrive folder; UV_PROJECT_ENVIRONMENT below keeps every `uv` call
+# pointed at it instead of creating a local .venv.
+
+env:
+  UV_PROJECT_ENVIRONMENT:
+    sh: echo "$HOME/.venv/Marburg"
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  # ---- Python (uv + NumPyro) ---------------------------------------------
+  py:setup:
+    desc: Sync the Python environment into ~/.venv/Marburg
+    cmds:
+      - uv sync
+
+  py:serial:
+    desc: Bayesian double-interval-censored serial interval (NumPyro)
+    dir: python
+    cmds:
+      - uv run python estimate_serial_interval_numpyro.py
+
+  py:figures:
+    desc: Regenerate ArviZ figures (trace, posterior, rank, forest) and timeline
+    cmds:
+      - task: py:serial
+
+  py:timeline:
+    desc: Regenerate outbreak_r_tg_timeline.csv (growth rates + per-outbreak SI join)
+    dir: python
+    cmds:
+      - uv run python build_timeline.py
+
+  py:mainfig:
+    desc: Build the 2x2 main paper figure (SI CDF, r and Tg over time, speed-strength)
+    deps: [py:serial]
+    dir: python
+    cmds:
+      - uv run python build_main_figure.py
+
+  py:appendix:
+    desc: Build the EID technical appendix (Quarto -> docx) from tables and figures
+    deps: [py:serial]
+    dir: python
+    cmds:
+      - uv run python build_appendix.py
+      - quarto render ../outputs/appendix/appendix.qmd --to docx
+
+  # ---- R ------------------------------------------------------------------
+  r:growth:
+    desc: Negative-binomial epidemic growth rates per outbreak
+    dir: R
+    cmds:
+      - Rscript estimate_growth_rates.R
+
+  r:serial:
+    desc: Interval-censored serial interval (primarycensored, MLE)
+    dir: R
+    cmds:
+      - Rscript estimate_serial_interval.R
+
+  r:r0:
+    desc: Monte Carlo R0 from growth rate and generation interval
+    dir: R
+    deps: [r:growth]
+    cmds:
+      - Rscript estimate_R0_montecarlo.R
+
+  r:sim:
+    desc: Branching-process vaccination simulations
+    dir: R
+    cmds:
+      - Rscript run_simulations.R
+
+  r:all:
+    desc: Run the R estimation pipeline (growth -> R0, plus serial interval)
+    cmds:
+      - task: r:growth
+      - task: r:r0
+      - task: r:serial
+
+  # ---- Julia --------------------------------------------------------------
+  jl:growth:
+    desc: Growth rates (Julia)
+    dir: julia
+    cmds:
+      - julia estimate_growth_rates.jl
+
+  jl:serial:
+    desc: Serial interval (Julia)
+    dir: julia
+    cmds:
+      - julia estimate_serial_interval.jl
+
+  jl:r0:
+    desc: Monte Carlo R0 (Julia)
+    dir: julia
+    deps: [jl:growth]
+    cmds:
+      - julia estimate_R0_montecarlo.jl
+
+  jl:all:
+    desc: Run the Julia estimation pipeline (growth -> R0, plus serial interval)
+    cmds:
+      - task: jl:growth
+      - task: jl:r0
+      - task: jl:serial

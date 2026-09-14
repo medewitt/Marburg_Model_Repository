@@ -1,0 +1,7 @@
+"outbreak","gi_source","gi_mean_days","gi_cv_pooled","r_per_day","r_lo","r_hi","R0_gamma_median","R0_gamma_lo","R0_gamma_hi"
+"DRC 1999","outbreak-pair censored mean (n=5)",10.8,0.478,0.0065,0.0012,0.0118,1.07,1.01,1.14
+"Marburg 1967","Qian pooled mean",9.2,0.478,0.0885,-0.0179,0.1949,2.1,0.85,4.58
+"Uganda 2012","outbreak-pair censored mean (n=7)",11.71,0.478,0.0163,-4e-04,0.033,1.2,1,1.49
+"Tanzania 2023","outbreak-pair censored mean (n=7)",10,0.478,0.2795,-0.0165,0.5755,8.6,0.85,40.34
+"Tanzania 2023 (excl. index)","outbreak-pair censored mean (n=7)",10,0.478,0,-1.0735,1.0735,3.43,0,265.84
+"Rwanda 2024","Qian pooled mean",9.2,0.478,0.1226,0.0648,0.1804,2.72,1.74,4.23

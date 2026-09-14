@@ -1,0 +1,7 @@
+set,family,rank,elpd_loo,p_loo,elpd_diff,dse,weight,se
+high only,lognormal,0,-33.14,1.67,0.0,0.0,1.0,2.37
+high only,gamma,1,-33.91,0.96,0.76,0.97,0.0,1.52
+high+medium,lognormal,0,-73.49,1.66,0.0,0.0,1.0,4.16
+high+medium,gamma,1,-74.5,1.45,1.02,0.56,0.0,3.68
+all incl low,lognormal,0,-78.56,1.56,0.0,0.0,1.0,4.23
+all incl low,gamma,1,-79.58,1.36,1.02,0.6,0.0,3.7

@@ -1,0 +1,6 @@
+source,population,distribution,mean_days,mean_95lo,mean_95hi,sd_days,cv,doi
+"This study (NumPyro, double-censored)","Marburg, high only",gamma,10.87,8.9,13.44,,,
+"This study (NumPyro, double-censored)","Marburg, high+medium",gamma,11.33,9.64,13.31,,,
+"This study (NumPyro, double-censored)","Marburg, all incl low",gamma,11.74,10.06,13.89,,,
+"Qian et al. 2023, medRxiv preprint","Marburg (all 15 outbreaks, pooled line lists)",gamma,9.2,,,4.4,0.478,10.1101/2022.06.17.22276538
+"WHO Ebola Response Team, NEJM 2014 (cited in Qian Table 1)","Ebola Zaire (comparator, NOT Marburg)",gamma,11.6,,,6.3,0.543,10.1056/NEJMoa1411100

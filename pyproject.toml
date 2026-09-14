@@ -1,0 +1,14 @@
+[project]
+name = "marburg-model"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "arviz<1",
+    "jax>=0.11.1",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.3",
+    "numpyro>=0.21.0",
+    "pandas>=3.0.5",
+    "tabulate>=0.10.0",
+]

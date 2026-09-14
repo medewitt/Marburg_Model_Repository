@@ -1,0 +1,13 @@
+set,parameter,mean,sd,ess_bulk,ess_tail,r_hat
+high only,mu,10.945,1.136,4253.0,4159.0,1.0
+high only,sd,4.02,1.007,4412.0,4338.0,1.0
+high only,cv,0.367,0.081,4261.0,4622.0,1.0
+high only,shape,8.481,3.606,4261.0,4622.0,1.0
+high+medium,mu,11.366,0.93,5216.0,4697.0,1.0
+high+medium,sd,4.688,0.781,5462.0,4767.0,1.0
+high+medium,cv,0.413,0.06,5294.0,5215.0,1.0
+high+medium,shape,6.242,1.771,5294.0,5215.0,1.0
+all incl low,mu,11.807,0.986,5473.0,4511.0,1.0
+all incl low,sd,5.091,0.833,6342.0,4942.0,1.0
+all incl low,cv,0.431,0.06,6599.0,4962.0,1.0
+all incl low,shape,5.68,1.52,6599.0,4962.0,1.0
